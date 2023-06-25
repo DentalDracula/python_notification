@@ -1,8 +1,8 @@
 {
     "type": "twilioSms",
     "name": "twilioMessage",
-    "accountSidSetting": "AC7d30d1a50ebaa7be2b0656d599c567e2",
-    "authTokenSetting": "29bc8183cf101392695c2baa6cce3826",
+    "accountSidSetting": "",
+    "authTokenSetting": "",
     "from": "+14179003897",
     "direction": "out",
     "body": "Azure Functions Testing"
