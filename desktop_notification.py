@@ -1,32 +1,43 @@
- 
+import requests
 import datetime # to read present date  
-import time # to suspend the execution for a specific time  
-import weather_app as w  
+import time # to suspend the execution for a specific time  notification 
 from plyer import notification
 from win10toast import ToastNotifier
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+def get_weather_data(api_key, location):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={location}&appid={api_key}"
+    response = requests.get(url)
+    weather_data = response.json()
+    return weather_data
   
-# create an object to ToastNotifier class
-n = ToastNotifier()
-temp = w.temperature,  
-feels = w.feels_like,  
-hum = w.humidity,  
-min = w.temp_min,
-max = w.temp_max
-message = "Temperature :" + str(temp)  + "\nFeels like: " + str(feels)  + "\nHumidity: " + str(hum) + "\nMinimum Temperature:" + str(min)  +"\nMaximum Temperature: "  + str(max)
-  
-n.show_toast("Weather App", message, duration = 30,
- icon_path ="weather.png")
-"""while(True):  
-    notification.notify( 
-        title = "Weather : {}".format(datetime.date.today()),
-        message = "Temperature : {temp}\nFeels like: {feels}\nHumidity: {hum}\nMinimum Temperature: {min}\nMaximum Temperature: {max}".format(  
-        temp = w.temperature,  
-        feels = w.feels_like,  
-        hum = w.humidity,  
-        min = w.temp_min,
-        max = w.temp_max),
-        timeout  = 30  
+def main() -> None:
+    # Retrieve the necessary environment variables
+    api_key = os.environ["OPENWEATHERMAP_API_KEY"]
+    location = os.environ["WeatherLocation"]    
+    weather_data = get_weather_data(api_key, location)
+    
+    # Extract relevant information from the weather data
+    temperature = weather_data["main"]["temp"]
+    humidity = weather_data["main"]["humidity"]
+    feels_like = weather_data['main']['feels_like']
+    temp_min = weather_data['main']['temp_min']
+    temp_max = weather_data['main']['temp_max']
+    
+    # Create the message to be sent
+    mess = f"Weather update:\nTemperature: {temperature}K\nHumidity: {humidity}\nFeels Like: {feels_like}\nMinimum temperature: {temp_min}\nMaximum Temperature: {temp_max}%"
+    #n = ToastNotifier()
+    #n.show_toast("Weather App", message, duration = 30,icon_path ="weather.png")
+    while(True):  
+        notification.notify( 
+            title = "Weather : {}".format(datetime.date.today()),
+            message = mess,  
+            timeout  = 30  
         )  
-"""
+
 #notification for everday
-#time.sleep(600 * 600 * 24)
+main()
+time.sleep(60*60* 24)
